@@ -117,7 +117,7 @@ service = server.listen(port, function(request, response) {
 							  		return document.getElementById(elementId).innerText;
 							  	}
 							  	else{
-							  		return "Element not found";
+							  		return "";
 							  	}
 					        }, request.headers.elementId);
 						
@@ -125,7 +125,9 @@ service = server.listen(port, function(request, response) {
 						  
 				    	}
 					else{
-						resultText = "";
+						resultText = page.evaluate(function () {
+						  	return document.getElementsByTagName('html')[0].innerHTML;
+				        });
 					}
 					
 					console.log("Got the result: " + resultText);
@@ -152,18 +154,16 @@ service = server.listen(port, function(request, response) {
     							  		return document.getElementById(elementId).innerText;
     							  	}
     							  	else{
-    							  		return null;
+    							  		return "";
     							  	}
     					        }, request.headers.elementId);
     						
 							  console.log("Got the result: " + resultText);
-    						  
-    						  if(resultText == null){
-    							  resultText = "";
-    						  }
     				    	}
     					else{
-    						resultText = "";
+    						resultText = page.evaluate(function () {
+    						  	return document.getElementsByTagName('html')[0].innerHTML;
+    				        });
     					}
     					
     					//page.render();
@@ -185,28 +185,24 @@ service = server.listen(port, function(request, response) {
     		console.log('complete header not found');
 	      window.setTimeout(function () {
 	    	
+	    	  var resultText;
 	    	if(typeof request.headers.elementId !== "undefined"){  
-			  var boundingClipRect = page.evaluate(function (elementId) {
+	    		resultText = page.evaluate(function (elementId) {
 				  	if(document.getElementById(elementId) !== null){
-				  		return document.getElementById(elementId).getBoundingClientRect();
+				  		return document.getElementById(elementId).innerText;
 				  	}
 				  	else{
-				  		return null;
+				  		return "";
 				  	}
 		        }, request.headers.elementId);
-			  
-			  if(boundingClipRect !== null){
-				  page.clipRect = {
-				            top:    boundingClipRect.top,
-				            left:   boundingClipRect.left,
-				            width:  boundingClipRect.width,
-				            height: boundingClipRect.height
-				        };
-			  }
+	    	}
+	    	else{
+	    		resultText = page.evaluate(function () {
+				  	return document.getElementsByTagName('html')[0].innerHTML;
+		        });
 	    	}
 	    	  
-	        page.render(path);
-	        response.write('Success: Screenshot saved to ' + path + "\n");
+	    	response.write(resultText);
 	        page.release();
 	        response.close();
 	      }, delay);

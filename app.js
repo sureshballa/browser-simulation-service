@@ -38,6 +38,6 @@ var port = process.env.PORT || config.server.port;
 
 var server = app.listen(port);
 //default is 2 mins, increasing to 5 mins
-server.timeout = 350000;
+server.timeout = 120000;
 
 console.log('Express server listening on port ' + port);

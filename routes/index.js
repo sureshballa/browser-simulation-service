@@ -60,7 +60,14 @@ module.exports = function(app, useCors) {
           res.setHeader("Access-Control-Expose-Headers", "Content-Type");
         }
         console.log("Result from phantomjs service is " + result);
-        res.send(201, result);
+        console.log("201 response? " + typeof result !== "undefined" || result !== "");
+        
+        if(typeof result !== "undefined" && result !== ""){
+        	res.send(201, result);
+        }
+        else{
+        	res.send(404, "Matching element not found for complete element id " + rasterizerOptions.headers["complete"] + " and target element id " + rasterizerOptions.headers["elementId"]);
+        }
       });
     }
   }
